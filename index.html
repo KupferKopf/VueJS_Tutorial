@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue 3 Basics</title>
+</head>
+<body>
+    <div id="app" v-cloak> <!-- hides the frame when refreshing the page where all the html is shown without the JS and vue logic being active -->
+        
+        {{ greeting }} </br> <!-- {{}} is used to acces variables from the JS/vue part -> stuff in the {{}} will be parsed as JS by vue -->
+        
+        {{ info }} </br>
+
+    </div>
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script><!-- all that it takes to use vue in the application -->
+    <script> // for custom code
+
+
+        let app = Vue.createApp({ // the import gives us the Vue variable and .createApp creates the Vue Application and we can pass it stuff in the options object 
+            data: function(){     // the options object is the {} inside () and any var or function thats gona be used in the application lives on this object (let app)
+                return{
+                    greeting: 'Hello Vue 3!', // the data function returns a variable with what ever value
+                    info: 5      
+                }
+            }
+            /*numb: function(){ I tryed to make a function on my own but it seems every variable you want to give to the html part need to be in the data function
+                return{
+                    info: 5
+                }
+            }*/
+        })
+        app.mount('#app') // used to mount the vue application somewhere in the html part -> so we can use the vue part in the html part 
+                          // with referencing 'id="app"' and '#app' everything in the vue 'let app' part can be used and interact in the marked "app" html part
+    </script>
+
+</body>
+</html>
