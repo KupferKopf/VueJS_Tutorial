@@ -38,22 +38,19 @@
     <div id="app" v-cloak> <!-- hides the frame when refreshing the page where all the html is shown without the JS and vue logic being active -->
         
         {{ greeting }} </br> <!-- {{}} is used to acces variables from the JS/vue part -> stuff in the {{}} will be parsed as JS by vue -->
-        
-        {{ info }} </br>
-                                <!-- Vue.js directives offer a way to connect html elements with the JS part-->
-        <input v-model="info"/> <!-- the directives are like html atributes but start with v- , now we can bind the value from the input by giving the directive a variable name -->
-                                <!-- now the info value is shown inside the input field and as value inside the input is changed the entire value of 'info' changes -->
-                                <!-- thats called two way databinding and is handled in Vue with that v-model directive -->
+        {{ info }} </br> <!-- Vue.js directives offer a way to connect html elements with the JS part-->
+        <input @keyup.enter="greet(greeting + 'TRolololo')" v-model="greeting"/>  <!-- keyup listens for keyboad inputs, which can be specified can be a common name or the key Number (for enter its 13) -->
 
         <hr />
 
+        <button v-on:click = "isVisible = true">Show Box</button> <!-- v-on:event used to create custom or standard browser events-->
+        <button @click = "toggleBox">Toggle Box</button> <!-- @event is the same as v-on and you can give it a name to connect it to a JS function-->
+
         <div v-if="isVisible" class="box"></div> <!-- if the statement is false the box will not be renderd/displaed not even if inspected-->
-        <div v-else-if="isVisible_2" class="box_3"></div> <!-- else if and else also exist opening up the way for more logic-->
-        <div v-else class="box_4"></div>
-        </br>
-        <div v-show="isVisible" class="box_2"></div> <!-- works almost like the if only diffrence is that it hides the object but still rendes it so you can see it with f12 and inspecting it  -->
-                                                     <!-- if is most of the times better if you just want to show or hide something important depending on a value-->
-                                                     <!-- but show is more efficent if you have a reason to show and hide the object multiple times -->
+        
+
+        <!-- in general you can add as many modifiers to the @click/@keyup/@whatever methods as you want/need, most of them will be shown by autocomplete so you can play arround-->
+
 
     </div>
 
@@ -66,15 +63,17 @@
                 return{
                     greeting: 'Hello Vue 3!', // the data function returns a variable with what ever value
                     info: 5,
-                    isVisible: false,
-                    isVisible_2: false             
+                    isVisible: false      
+                }
+            },
+            methods: { // here i can create as many functions/methods as i want like in the data part i can add as many variables as i want
+                toggleBox(){ // methods writen in here are availabe everywhere in the program
+                    this.isVisible = !this.isVisible
+                },
+                greet(greeting){
+                    console.log(greeting)
                 }
             }
-            /*numb: function(){ I tryed to make a function on my own but it seems every variable you want to give to the html part need to be in the data function
-                return{
-                    info: 5
-                }
-            }*/
         })
         app.mount('#app') // used to mount the vue application somewhere in the html part -> so we can use the vue part in the html part 
                           // with referencing 'id="app"' and '#app' everything in the vue 'let app' part can be used and interact in the marked "app" html part
