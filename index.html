@@ -29,6 +29,11 @@
         [v-cloak]{
             display: none;
         }
+
+        input{
+            margin: 10px;
+            display: block;
+        }
     </style>
     
 
@@ -36,15 +41,14 @@
 </head>
 <body>
     <div id="app" v-cloak> <!-- hides the frame when refreshing the page where all the html is shown without the JS and vue logic being active -->
+        <login-form/> <!-- the name of the customly created form down in the vue script part-->
         
-        {{ greeting }} </br> <!-- {{}} is used to acces variables from the JS/vue part -> stuff in the {{}} will be parsed as JS by vue -->
-        {{ info }} </br> <!-- Vue.js directives offer a way to connect html elements with the JS part-->
-        <input @keyup.enter="greet(greeting + 'TRolololo')" v-model="greeting"/>  <!-- keyup listens for keyboad inputs, which can be specified can be a common name or the key Number (for enter its 13) -->
+
 
         <hr />
 
         <button v-on:click = "isVisible = true">Show Box</button> <!-- v-on:event used to create custom or standard browser events-->
-        <button @click = "toggleBox">Toggle Box</button> <!-- @event is the same as v-on and you can give it a name to connect it to a JS function-->
+        <button @click.prevent.stop = "toggleBox">Toggle Box</button> <!-- @event is the same as v-on and you can give it a name to connect it to a JS function-->
 
         <div v-if="isVisible" class="box"></div> <!-- if the statement is false the box will not be renderd/displaed not even if inspected-->
         
@@ -75,6 +79,34 @@
                 }
             }
         })
+
+        app.component('login-form', { // a custom form that was meshioned in the html part -> you can use all the other vue parts/options like data and methods also in the component part
+            // template is the only required option and serves as a possible html body which lets define a structure that will be shown as the visual html code 
+            // Info not the standart way of doing it as here you don't have the autocomplete or error corretion features you would normaly have
+            // .prevent is used so the entire page isn't revreshed upon clicking submit
+            template: ` 
+                <form @submit.prevent="handleSubmit">
+                    <h1> {{ titel }} </h1>
+                    <input type="email" v-model="email"/>
+                    <input type="password" v-model="password"/>
+                    <button>Log in</button>
+                </form>
+            `,
+            data(){
+                return{
+                    titel: 'Login Form',
+                    email: '',
+                    password: ''
+                }
+            },
+            methods: {
+                handleSubmit(){
+                    console.log(this.email, this.password)
+                }
+            }
+        })
+
+
         app.mount('#app') // used to mount the vue application somewhere in the html part -> so we can use the vue part in the html part 
                           // with referencing 'id="app"' and '#app' everything in the vue 'let app' part can be used and interact in the marked "app" html part
     </script>
