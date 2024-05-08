@@ -41,7 +41,7 @@
 </head>
 <body>
     <div id="app" v-cloak> <!-- hides the frame when refreshing the page where all the html is shown without the JS and vue logic being active -->
-        <login-form/> <!-- the name of the customly created form down in the vue script part-->
+        <login-form/> <!-- the name of the customly created form down in the vue script part -->
         
 
 
@@ -52,7 +52,7 @@
 
         <div v-if="isVisible" class="box"></div> <!-- if the statement is false the box will not be renderd/displaed not even if inspected-->
         
-
+        
         <!-- in general you can add as many modifiers to the @click/@keyup/@whatever methods as you want/need, most of them will be shown by autocomplete so you can play arround-->
 
 
@@ -67,7 +67,7 @@
                 return{
                     greeting: 'Hello Vue 3!', // the data function returns a variable with what ever value
                     info: 5,
-                    isVisible: false      
+                    isVisible: true      
                 }
             },
             methods: { // here i can create as many functions/methods as i want like in the data part i can add as many variables as i want
@@ -80,23 +80,29 @@
             }
         })
 
+
         app.component('login-form', { // a custom form that was meshioned in the html part -> you can use all the other vue parts/options like data and methods also in the component part
             // template is the only required option and serves as a possible html body which lets define a structure that will be shown as the visual html code 
             // Info not the standart way of doing it as here you don't have the autocomplete or error corretion features you would normaly have
             // .prevent is used so the entire page isn't revreshed upon clicking submit
+            // v-bind allows to bind/connect 2 variable with each other in our case it binds the lable variable from the "custom-input" to the emailLable/passwordLable in our login-form
+            // v-bind can also be writen as Just :
             template: ` 
                 <form @submit.prevent="handleSubmit">
                     <h1> {{ titel }} </h1>
-                    <input type="email" v-model="email"/>
-                    <input type="password" v-model="password"/>
+                    <custom-input type="email" v-bind:label="emailLabel"/> 
+                    <custom-input type="password" :label="passwordLabel"/>
                     <button>Log in</button>
                 </form>
             `,
+            components: ['custom-input'], // in order to use a different custom component in another one you need to refrence it like this 
             data(){
                 return{
                     titel: 'Login Form',
                     email: '',
-                    password: ''
+                    password: '',
+                    emailLabel: 'Email',
+                    passwordLabel: 'Password'
                 }
             },
             methods: {
@@ -105,6 +111,25 @@
                 }
             }
         })
+        // another custom component this time only an input used in the first component
+        // we could refrence the lable in here as a data type but you can also do it in the other compnent parsing it over from there to here
+        // in order to access the value in the input we will also add an v-model here to save it to inputValue -> v-model updates the imputValue every time the value in the html input changes
+        app.component('custom-input', {
+            template: `
+                <label>
+                    {{ label }} 
+                    <input type="text" v-model="inputValue">    
+                </label>
+            `,
+            props: ['label'], // the props allows us to accept the values given from the parent component, 
+                              // the best way to write those is to make an array of strings of the names information that is passed down from the parent to the child object
+            data(){
+                return{
+                    inputValue: ''
+                }
+            }
+        })
+
 
 
         app.mount('#app') // used to mount the vue application somewhere in the html part -> so we can use the vue part in the html part 
