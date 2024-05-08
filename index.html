@@ -90,8 +90,8 @@
             template: ` 
                 <form @submit.prevent="handleSubmit">
                     <h1> {{ titel }} </h1>
-                    <custom-input type="email" v-bind:label="emailLabel"/> 
-                    <custom-input type="password" :label="passwordLabel"/>
+                    <custom-input v-model="email" v-bind:label="emailLabel"/> 
+                    <custom-input v-model="password" :label="passwordLabel"/>
                     <button>Log in</button>
                 </form>
             `,
@@ -121,13 +121,31 @@
                     <input type="text" v-model="inputValue">    
                 </label>
             `,
-            props: ['label'], // the props allows us to accept the values given from the parent component, 
+            props: ['label', 'modelValue'], // the props allows us to accept the values given from the parent component, 
                               // the best way to write those is to make an array of strings of the names information that is passed down from the parent to the child object
-            data(){
-                return{
-                    inputValue: ''
+                              // modelValue comes from the parent -> v-model="email" does multiple things at once, updating the email var and also giving us the modelValue which = email
+                              // so we can accept the value given over v-model/the parent object and use it here
+                              // now giving the vars in the parent component start values automatically displayes them in the child component thanks to v-model
+            computed: {
+                inputValue:{
+                    get(){ // if i get the var this will run
+                        return this.modelValue
+                    },
+                    set(value){ // if i set the var this will run, value can have anyname you want as vue automatically passes it to the variable in the ()
+                        this.$emit('update:modelValue', value) // $emits allows you to send out events other components can listen to, with that values can be passed arround
+                                                              // first arggument is the kind of event thats beeing emitted and the second arggument is the value thats passed through that event 
+                                                              // with v-model providing the values it is also always listening to these kinds of events so when this event here happens the value of the variable in the parent object gets updated
+                                                              // the reason why you would go to such lenghts in order to change a var is because the variables and their values passed down to the child object are unchangable, thats only possible in the same object
+                    }
                 }
             }
+            
+                              //multi commenting strg+k + strg+c crazy stuff
+            // data(){
+            //     return{
+            //         inputValue: ''
+            //     }
+            // }
         })
 
 
