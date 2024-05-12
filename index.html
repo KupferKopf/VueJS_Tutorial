@@ -1,4 +1,7 @@
-<!DOCTYPE html>
+<!DOCTYPE html> <!-- Im not sure how to make these segments easaly readable with always adding comments to parts -->
+                <!-- So in order to make it easier to read and have comments only about a sertant topic in that commit i will delete every comment after commiting and only leave the code -->
+                <!-- With that when looking at a commit you can easaly read the changes and their functions directly in the code without having to look over 10 rows of comments -->
+                <!-- and just in case i will keep the previous version and comments as a back up so i can look at the previous comments should i forget something  -->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -40,38 +43,32 @@
     
 </head>
 <body>
-    <div id="app" v-cloak> <!-- hides the frame when refreshing the page where all the html is shown without the JS and vue logic being active -->
-        <login-form/> <!-- the name of the customly created form down in the vue script part -->
+    <div id="app" v-cloak> 
+        <login-form/> 
         
-
-
         <hr />
 
-        <button v-on:click = "isVisible = true">Show Box</button> <!-- v-on:event used to create custom or standard browser events-->
-        <button @click.prevent.stop = "toggleBox">Toggle Box</button> <!-- @event is the same as v-on and you can give it a name to connect it to a JS function-->
+        <button v-on:click = "isVisible = true">Show Box</button> 
+        <button @click.prevent.stop = "toggleBox">Toggle Box</button> 
 
-        <div v-if="isVisible" class="box"></div> <!-- if the statement is false the box will not be renderd/displaed not even if inspected-->
+        <div v-if="isVisible" class="box"></div> 
         
-        
-        <!-- in general you can add as many modifiers to the @click/@keyup/@whatever methods as you want/need, most of them will be shown by autocomplete so you can play arround-->
-
-
     </div>
 
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script><!-- all that it takes to use vue in the application -->
-    <script> // for custom code
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script> 
 
 
-        let app = Vue.createApp({ // the import gives us the Vue variable and .createApp creates the Vue Application and we can pass it stuff in the options object 
-            data: function(){     // the options object is the {} inside () and any var or function thats gona be used in the application lives on this object (let app)
+        let app = Vue.createApp({ 
+            data: function(){     
                 return{
-                    greeting: 'Hello Vue 3!', // the data function returns a variable with what ever value
+                    greeting: 'Hello Vue 3!', 
                     info: 5,
                     isVisible: true      
                 }
             },
-            methods: { // here i can create as many functions/methods as i want like in the data part i can add as many variables as i want
-                toggleBox(){ // methods writen in here are availabe everywhere in the program
+            methods: { 
+                toggleBox(){ 
                     this.isVisible = !this.isVisible
                 },
                 greet(greeting){
@@ -80,80 +77,74 @@
             }
         })
 
-
-        app.component('login-form', { // a custom form that was meshioned in the html part -> you can use all the other vue parts/options like data and methods also in the component part
-            // template is the only required option and serves as a possible html body which lets define a structure that will be shown as the visual html code 
-            // Info not the standart way of doing it as here you don't have the autocomplete or error corretion features you would normaly have
-            // .prevent is used so the entire page isn't revreshed upon clicking submit
-            // v-bind allows to bind/connect 2 variable with each other in our case it binds the lable variable from the "custom-input" to the emailLable/passwordLable in our login-form
-            // v-bind can also be writen as Just :
+        // in order to loop an input we gona create a array containing all the info for each input we want like the model, the lable and a extra type
+        // the str in the <p> tag stands for string and with that we can use the var str in the p-tag 
+        // normaly a for-loop contains a key marking the iteration with a unique value allowing for easier debugging or finding the right value
+        // you can also add an iterator/i in the if clausel allowing to see the times it looped as well as use it as a key
+        // <p v-for="(str, i) in inputs" :key="i">{{ str }}</p> | Array: inputs: ['emails', 'password', 'name'] | removed after showcasing the loop features
+        // changed the array to fit our case of email & password | removed one input as we are looping them | changed the variables in the model and bind to correctly bind to the arrays now
+        // v-for can be used for simple html tags as well as custom made components
+        app.component('login-form', {
             template: ` 
                 <form @submit.prevent="handleSubmit">
                     <h1> {{ titel }} </h1>
-                    <custom-input v-model="email" v-bind:label="emailLabel"/> 
-                    <custom-input v-model="password" :label="passwordLabel"/>
+                    <custom-input 
+                        v-for="(input, i) in inputs"
+                        :key="i"
+                        v-model="input.value" 
+                        :label="input.label"
+                        :type="input.type"
+                    /> 
                     <button>Log in</button>
                 </form>
             `,
-            components: ['custom-input'], // in order to use a different custom component in another one you need to refrence it like this 
+            components: ['custom-input'], 
             data(){
                 return{
                     titel: 'Login Form',
-                    email: '',
-                    password: '',
-                    emailLabel: 'Email',
-                    passwordLabel: 'Password'
+                    inputs: [ // the array for the loop
+                        {
+                            label: 'Email',
+                            value: '',
+                            type: 'email'
+                        },
+                        {
+                            label: 'Password',
+                            value: '',
+                            type: 'password'
+                        }
+                    ]
                 }
             },
             methods: {
                 handleSubmit(){
-                    console.log(this.email, this.password)
+                    console.log(this.inputs[0].value, this.inputs[1].value) // simple output of the vars in a input
                 }
             }
-        })
-        // another custom component this time only an input used in the first component
-        // we could refrence the lable in here as a data type but you can also do it in the other compnent parsing it over from there to here
-        // in order to access the value in the input we will also add an v-model here to save it to inputValue -> v-model updates the imputValue every time the value in the html input changes
-        // other ways to change the input would be to listen for changes on the input and then call a method that emitts an event with the value | as well as | parcing a function from the parent to the child and the child can then call that function and change the parent variable that way
-        app.component('custom-input', {
+
+        }) // binded type to type so it uses the parent var 
+         app.component('custom-input', {
             template: `
                 <label>
                     {{ label }} 
-                    <input type="text" v-model="inputValue">    
+                    <input :type="type" v-model="inputValue">    
                 </label>
             `,
-            props: ['label', 'modelValue'], // the props allows us to accept the values given from the parent component, 
-                              // the best way to write those is to make an array of strings of the names information that is passed down from the parent to the child object
-                              // modelValue comes from the parent -> v-model="email" or "password" does multiple things at once, updating the email var and also giving us the modelValue which = email
-                              // so we can accept the value given over v-model/the parent object and use it here
-                              // now giving the vars in the parent component start values automatically displayes them in the child component thanks to v-model
+            // added type as we are using it in the input component
+            props: ['label', 'type', 'modelValue'], 
             computed: {
                 inputValue:{
-                    get(){ // if i get the var this will run
+                    get(){ 
                         return this.modelValue
                     },
-                    set(value){ // if i set the var this will run, value can have anyname you want as vue automatically passes it to the variable in the ()
-                        this.$emit('update:modelValue', value) // $emits allows you to send out events other components can listen to, with that values can be passed arround
-                                                               // first arggument is the kind of event thats beeing emitted and the second arggument is the value thats passed through that event 
-                                                               // with v-model providing the values it is also always listening to these kinds of events so when this event here happens the value of the variable in the parent object gets updated
-                                                               // the reason why you would go to such lenghts in order to change a var is because the variables and their values passed down to the child object are unchangable, thats only possible in the same object
-                                                               // 
+                    set(value){ 
+                        this.$emit('update:modelValue', value) 
                     }
                 }
             }
-            
-                              //multi commenting strg+k + strg+c crazy stuff
-            // data(){
-            //     return{
-            //         inputValue: ''
-            //     }
-            // }
         })
 
-
-
-        app.mount('#app') // used to mount the vue application somewhere in the html part -> so we can use the vue part in the html part 
-                          // with referencing 'id="app"' and '#app' everything in the vue 'let app' part can be used and interact in the marked "app" html part
+        app.mount('#app') 
     </script>
 
 </body>
