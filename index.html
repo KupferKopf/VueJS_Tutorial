@@ -114,6 +114,7 @@
         // another custom component this time only an input used in the first component
         // we could refrence the lable in here as a data type but you can also do it in the other compnent parsing it over from there to here
         // in order to access the value in the input we will also add an v-model here to save it to inputValue -> v-model updates the imputValue every time the value in the html input changes
+        // other ways to change the input would be to listen for changes on the input and then call a method that emitts an event with the value | as well as | parcing a function from the parent to the child and the child can then call that function and change the parent variable that way
         app.component('custom-input', {
             template: `
                 <label>
@@ -123,7 +124,7 @@
             `,
             props: ['label', 'modelValue'], // the props allows us to accept the values given from the parent component, 
                               // the best way to write those is to make an array of strings of the names information that is passed down from the parent to the child object
-                              // modelValue comes from the parent -> v-model="email" does multiple things at once, updating the email var and also giving us the modelValue which = email
+                              // modelValue comes from the parent -> v-model="email" or "password" does multiple things at once, updating the email var and also giving us the modelValue which = email
                               // so we can accept the value given over v-model/the parent object and use it here
                               // now giving the vars in the parent component start values automatically displayes them in the child component thanks to v-model
             computed: {
@@ -133,9 +134,10 @@
                     },
                     set(value){ // if i set the var this will run, value can have anyname you want as vue automatically passes it to the variable in the ()
                         this.$emit('update:modelValue', value) // $emits allows you to send out events other components can listen to, with that values can be passed arround
-                                                              // first arggument is the kind of event thats beeing emitted and the second arggument is the value thats passed through that event 
-                                                              // with v-model providing the values it is also always listening to these kinds of events so when this event here happens the value of the variable in the parent object gets updated
-                                                              // the reason why you would go to such lenghts in order to change a var is because the variables and their values passed down to the child object are unchangable, thats only possible in the same object
+                                                               // first arggument is the kind of event thats beeing emitted and the second arggument is the value thats passed through that event 
+                                                               // with v-model providing the values it is also always listening to these kinds of events so when this event here happens the value of the variable in the parent object gets updated
+                                                               // the reason why you would go to such lenghts in order to change a var is because the variables and their values passed down to the child object are unchangable, thats only possible in the same object
+                                                               // 
                     }
                 }
             }
