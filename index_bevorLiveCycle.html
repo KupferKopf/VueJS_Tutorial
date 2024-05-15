@@ -1,0 +1,151 @@
+<!DOCTYPE html> <!-- Im not sure how to make these segments easaly readable with always adding comments to parts -->
+                <!-- So in order to make it easier to read and have comments only about a sertant topic in that commit i will delete every comment after commiting and only leave the code -->
+                <!-- With that when looking at a commit you can easaly read the changes and their functions directly in the code without having to look over 10 rows of comments -->
+                <!-- and just in case i will keep the previous version and comments as a back up so i can look at the previous comments should i forget something  -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue 3 Basics</title>
+
+    <style>
+        .box{
+            background-color: purple;
+            height: 200px;
+            width: 200px;
+        }
+        .box_2{
+            background-color: red;
+            height: 200px;
+            width: 200px;
+        }
+        .box_3{
+            background-color: blue;
+            height: 100px;
+            width: 100px;
+        }
+        .box_4{
+            background-color: green;
+            height: 50px;
+            width: 50px;
+        }
+        [v-cloak]{
+            display: none;
+        }
+
+        input{
+            margin: 10px;
+            display: block;
+        }
+    </style>
+    
+
+    
+</head>
+<body>
+    <div id="app" v-cloak> 
+        <login-form/> 
+        
+        <hr />
+
+        <button v-on:click = "isVisible = true">Show Box</button> 
+        <button @click.prevent.stop = "toggleBox">Toggle Box</button> 
+
+        <div v-if="isVisible" class="box"></div> 
+        
+    </div>
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script> 
+
+
+        let app = Vue.createApp({ 
+            data: function(){     
+                return{
+                    greeting: 'Hello Vue 3!', 
+                    info: 5,
+                    isVisible: true      
+                }
+            },
+            methods: { 
+                toggleBox(){ 
+                    this.isVisible = !this.isVisible
+                },
+                greet(greeting){
+                    console.log(greeting)
+                }
+            }
+        })
+
+        // in order to loop an input we gona create a array containing all the info for each input we want like the model, the lable and a extra type
+        // the str in the <p> tag stands for string and with that we can use the var str in the p-tag 
+        // normaly a for-loop contains a key marking the iteration with a unique value allowing for easier debugging or finding the right value
+        // you can also add an iterator/i in the if clausel allowing to see the times it looped as well as use it as a key
+        // <p v-for="(str, i) in inputs" :key="i">{{ str }}</p> | Array: inputs: ['emails', 'password', 'name'] | removed after showcasing the loop features
+        // changed the array to fit our case of email & password | removed one input as we are looping them | changed the variables in the model and bind to correctly bind to the arrays now
+        // v-for can be used for simple html tags as well as custom made components
+        app.component('login-form', {
+            template: ` 
+                <form @submit.prevent="handleSubmit">
+                    <h1> {{ titel }} </h1>
+                    <custom-input 
+                        v-for="(input, i) in inputs"
+                        :key="i"
+                        v-model="input.value" 
+                        :label="input.label"
+                        :type="input.type"
+                    /> 
+                    <button>Log in</button>
+                </form>
+            `,
+            components: ['custom-input'], 
+            data(){
+                return{
+                    titel: 'Login Form',
+                    inputs: [ // the array for the loop
+                        {
+                            label: 'Email',
+                            value: '',
+                            type: 'email'
+                        },
+                        {
+                            label: 'Password',
+                            value: '',
+                            type: 'password'
+                        }
+                    ]
+                }
+            },
+            methods: {
+                handleSubmit(){
+                    console.log(this.inputs[0].value, this.inputs[1].value) // simple output of the vars in a input
+                }
+            }
+
+        }) // binded type to type so it uses the parent var 
+         app.component('custom-input', {
+            template: `
+                <label>
+                    {{ label }} 
+                    <input :type="type" v-model="inputValue">    
+                </label>
+            `,
+            // added type as we are using it in the input component
+            props: ['label', 'type', 'modelValue'], 
+            computed: {
+                inputValue:{
+                    get(){ 
+                        return this.modelValue
+                    },
+                    set(value){ 
+                        this.$emit('update:modelValue', value) 
+                    }
+                }
+            }
+        })
+
+        app.mount('#app') 
+    </script>
+
+</body>
+</html>
