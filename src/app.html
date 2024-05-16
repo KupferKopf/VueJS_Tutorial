@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Splendid Food</title>
+    <link rel="stylesheet" href="styles/style.min.css">
+    <link rel="icon" href="../public/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="../public/favicon.ico" type="image/ico">
+  </head>
+  <body>
+
+    <div id="app">
+
+      <header class="top-bar spread">
+        <nav class="top-bar-nav">
+          <a href="#" class="top-bar-link">
+            <i class="icofont-spoon-and-fork"></i>
+            <span>Home</span>
+          </a>
+          <a href="views/products.html" class="top-bar-link">
+            <span>Products</span>
+          </a>
+          <a href="views/past-orders.html" class="top-bar-link">
+            <span>Past Orders</span>
+          </a>
+        </nav>
+        <a href="#" class="top-bar-cart-link">
+          <i class="icofont-cart-alt icofont-1x"></i>
+          <span>Cart (0)</span>
+        </a>
+      </header>
+
+      <div class="splash-container">
+        <div class="splash">
+          <h1>Splendid Food</h1>
+        </div>
+      </div>
+
+      <main class="wrapper">
+
+        <h2>Recommended</h2>
+
+        <div class="recommended">
+
+          <div class="card">
+            <div class="card-title">
+              Carrots
+            </div>
+            <div class="card-body">
+              <i class="icofont-10x icofont-carrot"></i>
+              <form>
+                <div class="row">
+                  <div class="cell">
+                    <label>Type:</label>
+                  </div>
+                  <div class="cell">
+                    <em>Vegetable</em>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="cell">
+                    <label>Price:</label>
+                  </div>
+                  <div class="cell">
+                    $4.82
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="cell">
+                    <label>Quantity:</label>
+                  </div>
+                  <div class="cell">
+                    <input type="number" v-model.number="inventory.carrots"> <!-- to have not a fixed value ( a number ) but one that changes in response to an event-->
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div class="card-footer">
+              <button @click="addToCart('carrots')" class="btn btn-light"> <!-- to call the add method and update the -->
+                Add to cart
+              </button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">
+              Pineapples
+            </div>
+            <div class="card-body">
+              <i class="icofont-10x icofont-pineapple"></i>
+              <form>
+                <div class="row">
+                  <div class="cell">
+                    <label>Type:</label>
+                  </div>
+                  <div class="cell">
+                    <em>Fruit</em>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="cell">
+                    <label>Price:</label>
+                  </div>
+                  <div class="cell">
+                    $1.62
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="cell">
+                    <label>Quantity:</label>
+                  </div>
+                  <div class="cell">
+                    <input type="number" v-model="inventory.pineapples"> <!-- same as carrots also changing on an event -->
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div class="card-footer">
+              <button @click="addToCart('pineapples')" class="btn btn-light">
+                Add to cart
+              </button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">
+              Cherries
+            </div>
+            <div class="card-body">
+              <i class="icofont-10x icofont-cherry"></i>
+              <form>
+                <div class="row">
+                  <div class="cell">
+                    <label>Type:</label>
+                  </div>
+                  <div class="cell">
+                    <em>Fruit</em>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="cell">
+                    <label>Price:</label>
+                  </div>
+                  <div class="cell">
+                    $1.04
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="cell">
+                    <label>Quantity:</label>
+                  </div>
+                  <div class="cell">
+                    <input type="number" v-model="inventory.cherries"> <!-- also changing on event -->
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div class="card-footer">
+              <button @click="addToCart('cherries')" class="btn btn-light">
+                Add to cart
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </main>
+
+      <footer>
+      </footer>
+
+    </div>
+      
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script>
+      let app = Vue.createApp({
+        data() {
+          return {
+            inventory: { // the different parts that you can shop and add the wanted amount
+              carrots: 2, // start value of the inventory
+              pineapples: 0,
+              cherries: 0
+            },
+            cart: { // a temp storage of the wanted goods bevor proceding to check-out
+              carrots: 0,
+              pineapples: 0,
+              cherries: 0
+            }
+          }
+        },
+        methods: {
+          addToCart(type) { // giving the type of what we want to add to the cart
+            this.cart[type] += this.inventory[type] // increasing the amount of that type in the cart by the amount in the inventory 
+            console.log(this.cart) // prints the cart
+          }
+        }
+      })
+
+      app.mount('#app')
+    </script>
+  </body>
+</html>

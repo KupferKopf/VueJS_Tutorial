@@ -44,3 +44,16 @@ $ npm run dev
 $ npm run build
 
 ```
+
+### App demo
+After the point of App demo in the video, she pulls up a complete html and css project which was linked in the description of the video via github 
+which i copied because i don't want to type off everything she shows and in order to learn vue i can't just make my own without knowing what is needed so i just copied it
+
+also i can't explain what the json files are for in the json files so i will do it here as well
+package.json:
+first parte contains some metadata of the project
+the script section contains the start server which compiles the styles(sass) and serves our application for us as well as some other stuff i guess
+
+src contains all the main stuff of code we use and write
+
+

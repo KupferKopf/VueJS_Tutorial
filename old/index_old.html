@@ -1,0 +1,80 @@
+<!DOCTYPE html> <!-- Im not sure how to make these segments easaly readable with always adding comments to parts -->
+                <!-- So in order to make it easier to read and have comments only about a sertant topic in that commit i will delete every comment after commiting and only leave the code -->
+                <!-- With that when looking at a commit you can easaly read the changes and their functions directly in the code without having to look over 10 rows of comments -->
+                <!-- and just in case i will keep the previous version and comments as a back up so i can look at the previous comments should i forget something  -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue 3 Basics</title>
+    <style>
+        .box{
+            background-color: purple;
+            height: 200px;
+            width: 200px;
+        }
+        [v-cloak]{
+            display: none;
+        }
+    </style>
+     
+</head>
+<body>
+    <div id="app" v-cloak> 
+        <!-- for some reasone if the custom component is placed bevor the other html code it blocks or smth and the html code is just not rendered, not hidden, just straight up not existing in the inspect -->
+        <!-- Lifecylce hooks-->
+        <!-- a livecycle hook is a function that runs at a sertant point in the livecycle of a component -->
+        <!-- the most commen use-cases for hooks are 1. checking if someone is autherized to do something, 2. to make API calls to get data from the backend or the browserstorage, 3. to initalise and remove events and 4. to clean/save data or run some checks  -->
+        <!-- there are 10 options when a hook can run -->
+        <!-- beforeCreate: right bevor vue.js has initaliced the component -->
+        <!-- created: right after vue.js has initaliced the component -->
+        <!-- beforeMount: right bevor the component is mounted to the dom -->
+        <!-- mounted: right after the component is mounted to the dom -->
+        <!-- beforUpdated: right bevor the data in the component changes/gets updated -->
+        <!-- updated: right after the data in the component got changed/updated -->
+        <!-- activated: -->
+        <!-- deactivated -->
+        <!-- beforUnmount: right bevor the component is removed-->
+        <!-- unmounted: right after the component is removed-->
+        
+        <button @click.prevent.stop = "toggleBox">Toggle Box</button> 
+        <test-box v-if="isVisible"/> 
+    </div>
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script> 
+        let app = Vue.createApp({ 
+            data: function(){     
+                return{
+                    isVisible: false      
+                }
+            },
+            methods: { 
+                toggleBox(){ 
+                    this.isVisible = !this.isVisible
+                }
+            },
+            updated(){
+                console.log('updated') // updates the isVisible is getting changed so updated runs
+            }
+        })
+
+        app.component('test-box', {
+            template: `
+                <div class="box"></div>
+            `,
+            created(){
+                console.log('created') // first
+            },
+            mounted(){
+                console.log('mounted') // second
+            },
+            unmounted(){
+                console.log('unmounted') // press again and third
+            }
+        })
+        app.mount('#app') 
+    </script>
+
+</body>
+</html>
