@@ -25,7 +25,7 @@
         </nav>
         <a @click="toggleSidebar" href="#" class="top-bar-cart-link">
           <i class="icofont-cart-alt icofont-1x"></i>
-          <span>Cart (0)</span>
+          <span>Cart ({{ totalQuantity}})</span>
         </a>
       </header>
 
@@ -41,59 +41,20 @@
 
         <div class="recommended">
 
-          <div class="card">
-            <div class="card-title">
-              Carrots
-            </div>
-            <div class="card-body">
-              <i class="icofont-10x icofont-carrot"></i>
-              <form>
-                <div class="row">
-                  <div class="cell">
-                    <label>Type:</label>
-                  </div>
-                  <div class="cell">
-                    <em>Vegetable</em>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="cell">
-                    <label>Price:</label>
-                  </div>
-                  <div class="cell">
-                    $4.82
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="cell">
-                    <label>Quantity:</label>
-                  </div>
-                  <div class="cell">
-                    <input type="number" v-model.number="inventory.carrots"> <!-- to have not a fixed value ( a number ) but one that changes in response to an event-->
-                  </div>
-                </div>
-              </form>
-            </div>
-            <div class="card-footer">
-              <button @click="addToCart('carrots')" class="btn btn-light"> <!-- to call the add method and update the -->
-                Add to cart
-              </button>
-            </div>
-          </div>
 
-          <div class="card">
+          <div v-for="(product, i) in inventory.slice(0,3)" :key="product.id" class="card"> <!-- getting all the products from the list but only showing the first 3 as well as adding a key as we are looping (so we know in which loop we are)-->
             <div class="card-title">
-              Pineapples
+              {{ product.name }} <!-- the name of the item -->
             </div>
             <div class="card-body">
-              <i class="icofont-10x icofont-pineapple"></i>
+              <i class="icofont-10x icofont-{{ product.icon }}"></i> <!-- the icon of the item -->
               <form>
                 <div class="row">
                   <div class="cell">
                     <label>Type:</label>
                   </div>
                   <div class="cell">
-                    <em>Fruit</em>
+                    <em>{{ product.type }}</em>
                   </div>
                 </div>
                 <div class="row">
@@ -101,7 +62,7 @@
                     <label>Price:</label>
                   </div>
                   <div class="cell">
-                    $1.62
+                    ${{ product.price.USD}}
                   </div>
                 </div>
                 <div class="row">
@@ -109,53 +70,13 @@
                     <label>Quantity:</label>
                   </div>
                   <div class="cell">
-                    <input type="number" v-model="inventory.pineapples"> <!-- same as carrots also changing on an event -->
+                    <input type="number" v-model.number="product.quantity"> <!--  -->
                   </div>
                 </div>
               </form>
             </div>
             <div class="card-footer">
-              <button @click="addToCart('pineapples')" class="btn btn-light">
-                Add to cart
-              </button>
-            </div>
-          </div>
-
-          <div class="card">
-            <div class="card-title">
-              Cherries
-            </div>
-            <div class="card-body">
-              <i class="icofont-10x icofont-cherry"></i>
-              <form>
-                <div class="row">
-                  <div class="cell">
-                    <label>Type:</label>
-                  </div>
-                  <div class="cell">
-                    <em>Fruit</em>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="cell">
-                    <label>Price:</label>
-                  </div>
-                  <div class="cell">
-                    $1.04
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="cell">
-                    <label>Quantity:</label>
-                  </div>
-                  <div class="cell">
-                    <input type="number" v-model="inventory.cherries"> <!-- also changing on event -->
-                  </div>
-                </div>
-              </form>
-            </div>
-            <div class="card-footer">
-              <button @click="addToCart('cherries')" class="btn btn-light">
+              <button @click="addToCart(product.name, i)" class="btn btn-light"> <!-- to call the add method and update the -->
                 Add to cart
               </button>
             </div>
@@ -169,16 +90,14 @@
         v-if="showSidebar" 
         :toggle="toggleSidebar"
         :cart="cart"
+        :inventory="inventory"
+        :remove="removeItem"
       /> 
+
       <!-- we can't call the toggleSidebar methode in a component that we create in this file so we have to hand over the methode 
            don't forget the : bevor toggle so it uses it saved as a variable containing the methode and not just as a string 
            in order to get the value that is added in the input file of the main layout into the cart/sidebar we need a variable (cart)
-          
-          -->
-
-      
-      
-      
+      -->
 
       <footer>
       </footer>
@@ -191,36 +110,53 @@
         data() {
           return {
             showSidebar: false,
-            inventory: { // the different parts that you can shop and add the wanted amount
-              carrots: 2, // start value of the inventory
-              pineapples: 0,
-              cherries: 0
-            },
-            cart: { // a temp storage of the wanted goods bevor proceding to check-out
-              carrots: 0,
-              pineapples: 0,
-              cherries: 0
-            }
+            inventory: [], // removing the static values to use the importat ones
+            cart: {}
+          }
+        },
+        computed: {
+          totalQuantity() {
+            return Object.values(this.cart).reduce((sum, current) => {
+              return sum + current
+            }, 0)
           }
         },
         methods: {
-          addToCart(type) { // giving the type of what we want to add to the cart
-            this.cart[type] += this.inventory[type] // increasing the amount of that type in the cart by the amount in the inventory 
-            console.log(this.cart) // prints the cart
+          addToCart(name, index) { // updated making it work with all data and also adding vars for things that haven't been added bevor
+            if(!this.cart[name]) this.cart[name] = 0
+            this.cart[name] += this.inventory[index].quantity 
+            this.inventory[index].quantity = 0
           },
           toggleSidebar(){
             this.showSidebar = !this.showSidebar
+          },
+          removeItem(name){
+            delete this.cart[name]
           }
+        },
+        async mounted(){ // loading the data from the food.json file and converting it from json to usefull data
+          const res = await fetch('./food.json')
+          const data = await res.json()
+          this.inventory = data
         }
       })
 
 
-      app.component('sidebar', { // turning the sidebar into a reusable 
-        props: ['toggle', 'cart'], // we hand over the methode and change it's name here so we can use it in the template code
-        computed: {
-          cartTotal(){
-            return (this.cart.carrots * 4.82).toFixed(2)
-          }
+      app.component('sidebar', { 
+        props: ['toggle', 'cart', 'inventory', 'remove'], 
+        methods: {
+          getPrice(name){ // in order to acces the price of an item from the in inventory in the cart we need to fetch it first as we only have the data from the cart (the name and quantity)
+            const product = this.inventory.find((p) => {
+              return p.name === name
+            })
+            return product.price.USD
+          },
+          calcTotal(){ 
+            const totalCost = Object.entries(this.cart).reduce((sum, current, index) => { // Object.values gives you an array of all the values out of object so all values in it will be listet as an array | reduce is a build in javascript function where we save an sum, so its calculating a sum every itaration throughout a loop, also allows the accessing of the current item (in our case it contains the key and the value of the item in the cart) that is looped through and the index of that item
+            return sum + (current[1] * this.getPrice(current[0]))
+          }, 0)
+          return totalCost.toFixed(2)
+        }
         },
         template: `
         <aside class="cart-container"> <!-- the cart/side-bar that pops up in products or past orders-->
@@ -246,14 +182,14 @@
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td><i class="icofont-carrot icofont-3x"></i></td>
-                  <td>Carrot</td>
-                  <td>$1.00</td>
-                  <td class="center">{{ cart.carrots }}</td>
-                  <td>\${{ (cart.carrots * 4.82).toFixed(2) }}</td>
+                <tr v-for="(quantity, key, i) in cart" :key="i">
+                  <td><i class="icofont-{{ key.icon }} icofont-3x"></i></td>
+                  <td>{{ key }}</td>
+                  <td>\${{ getPrice(key) }}</td>
+                  <td class="center">{{ quantity }}</td>
+                  <td>\${{ (quantity * getPrice(key)).toFixed(2) }}</td>
                   <td class="center">
-                    <button class="btn btn-light cart-remove">
+                    <button @click="remove(key)" class="btn btn-light cart-remove">
                       &times;
                     </button>
                   </td>
@@ -261,9 +197,9 @@
               </tbody>
             </table>
 
-            <p class="center"><em>No items in cart</em></p>
+            <p class="center" v-if="!Object.keys(cart).length"><em>No items in cart</em></p>
             <div class="spread">
-              <span><strong>Total:</strong> \${{ cartTotal }}</span>
+              <span><strong>Total:</strong> \${{ calcTotal() }}</span>
               <button class="btn btn-light">Checkout</button>
             </div>
           </div>
