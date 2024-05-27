@@ -20,10 +20,10 @@
           <a href="past-orders.html" class="top-bar-link">
             <span>Past Orders</span>
           </a>
-        </nav>
-        <a href="#" class="top-bar-cart-link">
+        </nav> <!-- reuse of the cart button and binde -->
+        <a @click="toggleSidebar" href="#" class="top-bar-cart-link">
           <i class="icofont-cart-alt icofont-1x"></i>
-          <span>Cart (0)</span>
+          <span>Cart ({{ totalQuantity}})</span>
         </a>
       </header>
 
@@ -109,7 +109,19 @@
         </div>
       </aside>
 
+      <!-- reuse of the sidebar binde -->
+      <sidebar  
+        v-if="showSidebar" 
+        :toggle="toggleSidebar"
+        :cart="cart"
+        :inventory="inventory"
+        :remove="removeItem"
+      /> 
+
     </div>
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="../app.js"> </script> <!-- local js import -->
 
   </body>
 </html>
